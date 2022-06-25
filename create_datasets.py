@@ -14,8 +14,6 @@ options = Options()
 options.add_argument('-profile')
 options.add_argument('/home/marvin/snap/firefox/common/.mozilla/firefox')
 
-driver = webdriver.Firefox(options=options)
-
 def fetch_image_urls(query, max_links, driver, sleep_time = 1):
     def scroll_to_end(driver):
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
@@ -83,3 +81,19 @@ def persist_image(folder_path, url):
     
     except Exception as e:
         print(f"Error - could not save image - {e}")
+
+
+def search_and_download(search_term, driver, dataset_path = './dataset', number_images = 5000):
+    dataset_folder = os.path.join(dataset_path, "_".join(search_term.lower().split(' ')))
+
+    if not os.path.exists(dataset_folder):
+        os.makedirs(dataset_folder)
+    
+    with webdriver.Firefox(options=options) as driver:
+        res = fetch_image_urls(search_term, number_images, driver)
+
+    for elem in res:
+        persist_image(dataset_folder, elem)
+
+
+
