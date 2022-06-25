@@ -1,9 +1,14 @@
+import hashlib
+import io
+import os
+import requests
 from time import sleep
+
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 
+from PIL import Image
 
 options = Options()
 options.add_argument('-profile')
@@ -59,6 +64,22 @@ def fetch_image_urls(query, max_links, driver, sleep_time = 1):
     return image_urls
 
 
-urls = fetch_image_urls('Frog', 10, driver)
+def persist_image(folder_path, url):
+    try:
+        image_content =requests.get(url).content
+    
+    except Exception as e:
+        print(f"Error - could not download image - {e}")
 
-print(urls)
+    try:
+        image_file = io.BytesIO(image_content)
+        image = Image.open(image_file).convert('RGB')
+        file_path = os.path.join(folder_path, hashlib.sha1(image_content).hexdigest()[:10]+'.jpg')
+
+        with open(file_path, 'wb') as f:
+            image.save(f, "JPEG", quality=85)
+        
+        print(f"SUCCESS - saved image as {file_path}")
+    
+    except Exception as e:
+        print(f"Error - could not save image - {e}")
