@@ -94,10 +94,3 @@ def search_and_download(search_term, dataset_path = './dataset', number_images =
 
     for elem in res:
         persist_image(dataset_folder, elem)
-
-
-time_bef = time.time()
-search_and_download('toad', number_images=1000)
-time_aft = time.time()
-
-print("Total time to download 1000 images = ", str(time_aft-time_bef), " secs.")
