@@ -2,7 +2,7 @@ import hashlib
 import io
 import os
 import requests
-from time import sleep
+import time
 
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
@@ -17,7 +17,7 @@ options.add_argument('/home/marvin/snap/firefox/common/.mozilla/firefox')
 def fetch_image_urls(query, max_links, driver, sleep_time = 1):
     def scroll_to_end(driver):
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        sleep(sleep_time)
+        time.sleep(sleep_time)
     
     # Build the google query
     search_url = "https://www.google.com/search?safe=off&site=&tbm=isch&source=hp&q={q}&oq={q}&gs_l=img"
@@ -42,7 +42,7 @@ def fetch_image_urls(query, max_links, driver, sleep_time = 1):
         for img in thumbnail_res[results_start:num_results]:
             try:
                 img.click()
-                sleep(sleep_time)
+                time.sleep(sleep_time)
             except Exception:
                 continue
             
@@ -83,17 +83,21 @@ def persist_image(folder_path, url):
         print(f"Error - could not save image - {e}")
 
 
-def search_and_download(search_term, driver, dataset_path = './dataset', number_images = 5000):
+def search_and_download(search_term, dataset_path = './dataset', number_images = 5000):
     dataset_folder = os.path.join(dataset_path, "_".join(search_term.lower().split(' ')))
 
     if not os.path.exists(dataset_folder):
         os.makedirs(dataset_folder)
     
     with webdriver.Firefox(options=options) as driver:
-        res = fetch_image_urls(search_term, number_images, driver)
+        res = fetch_image_urls(search_term, number_images, driver, 0.1)
 
     for elem in res:
         persist_image(dataset_folder, elem)
 
 
+time_bef = time.time()
+search_and_download('toad', number_images=1000)
+time_aft = time.time()
 
+print("Total time to download 1000 images = ", str(time_aft-time_bef), " secs.")
