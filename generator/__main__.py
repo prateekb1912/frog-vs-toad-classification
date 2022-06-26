@@ -1,4 +1,5 @@
 from argparse import ArgumentParser
+from generator.core.image_generator import search_and_download
 
 argparser = ArgumentParser(
     prog='generator',
@@ -15,6 +16,7 @@ reqd.add_argument(
 argparser.add_argument(
     '-s', '--size',
     help='Number of images to be downloaded in the dataset',
+    type=int,
     default=5000
 )
 
@@ -25,3 +27,7 @@ argparser.add_argument(
 )
 
 args = argparser.parse_args()
+
+print(args)
+
+search_and_download(args.query, args.path, int(args.size))

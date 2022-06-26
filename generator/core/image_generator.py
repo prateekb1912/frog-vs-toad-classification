@@ -90,7 +90,7 @@ def search_and_download(search_term, dataset_path = './dataset', number_images =
         os.makedirs(dataset_folder)
     
     with webdriver.Firefox(options=options) as driver:
-        res = fetch_image_urls(search_term, number_images, driver, 0.1)
+        res = fetch_image_urls(search_term, number_images, driver, 0.01)
 
     for elem in res:
         persist_image(dataset_folder, elem)
