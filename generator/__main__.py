@@ -28,6 +28,4 @@ argparser.add_argument(
 
 args = argparser.parse_args()
 
-print(args)
-
 search_and_download(args.query, args.path, int(args.size))

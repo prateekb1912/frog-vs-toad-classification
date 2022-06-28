@@ -39,10 +39,13 @@ def fetch_image_urls(query, max_links, driver, sleep_time = 1):
 
         print(f"Found: {num_results} search results. Extracting links from {results_start}:{num_results}")
 
+        if num_results == results_start:
+            print("No more images found! Aborting extraction....")
+            return image_urls
+
         for img in thumbnail_res[results_start:num_results]:
             try:
                 img.click()
-                time.sleep(sleep_time)
             except Exception:
                 continue
             
